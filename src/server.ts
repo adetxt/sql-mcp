@@ -14,6 +14,7 @@ const options = program.opts<{
 export const getServer = () => {
   const server = new McpServer({
     name: 'sql-mcp',
+    title: 'SQL MCP',
     version: '1.0.0',
   })
 
