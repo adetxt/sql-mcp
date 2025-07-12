@@ -1,6 +1,6 @@
 {
   "name": "@adetxt/sql-mcp",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "MCP Server for SQL",
   "bugs": "https://github.com/adetxt/sql-mcp/issues",
   "main": "dist/index.js",
