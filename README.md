@@ -2,6 +2,10 @@
 
 A Model Context Protocol (MCP) server implementation for SQL databases, providing a standardized interface for interacting with SQL databases through the MCP protocol.
 
+<a href="https://glama.ai/mcp/servers/@adetxt/sql-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@adetxt/sql-mcp/badge" alt="SQL Server MCP server" />
+</a>
+
 ## Installation
 
 <details>
