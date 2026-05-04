@@ -225,4 +225,88 @@ export async function registerTools(server: McpServer, enableWriteOperations: bo
       return { content: [{ type: 'text', text: JSON.stringify(results) }] }
     },
   )
+
+  server.registerTool(
+    'prompt_story',
+    {
+      title: 'Prompt Story',
+      description:
+        'Generate a comprehensive prompt for another AI agent to produce a full narrative story about a topic ' +
+        '(e.g. "booking flow", "purchase flow"). The returned prompt instructs the agent to include a high-level ' +
+        'summary, step-by-step explanation, Mermaid diagrams (sequence, flowchart, or ER as appropriate), ' +
+        'comparison tables, edge-case callouts, and a conclusion — so the caller can paste it directly into ' +
+        'any AI assistant and receive a rich, structured story.',
+      inputSchema: {
+        topic: z.string().describe('The subject to tell a story about, e.g. "booking flow" or "purchase flow".'),
+        context: z
+          .string()
+          .optional()
+          .describe('Optional extra context (domain, tech stack, audience) to make the story more specific.'),
+      },
+    },
+    async ({ topic, context }) => {
+      const contextBlock = context
+        ? `\n\nAdditional context provided by the user:\n${context}\n`
+        : ''
+
+      const prompt = `You are a technical storyteller. Your task is to produce a rich, structured explanation of the following topic:
+
+**Topic:** ${topic}
+${contextBlock}
+---
+
+Follow this exact structure in your response:
+
+## 1. Overview
+Write a concise paragraph (3–5 sentences) describing what "${topic}" is, why it exists, and who it affects.
+
+## 2. Step-by-Step Walkthrough
+Describe each stage of the flow in numbered steps. For each step include:
+- What happens
+- Which system / service / actor is responsible
+- What data is passed or transformed
+
+## 3. Sequence Diagram
+Render a Mermaid **sequenceDiagram** that shows all actors and messages for the full flow.
+\`\`\`mermaid
+sequenceDiagram
+  ...
+\`\`\`
+
+## 4. Flowchart
+Render a Mermaid **flowchart TD** covering decision points and alternate paths (happy path + error/edge cases).
+\`\`\`mermaid
+flowchart TD
+  ...
+\`\`\`
+
+## 5. Data / Entity Overview
+If relevant, render a Mermaid **erDiagram** showing the key entities involved and their relationships.
+\`\`\`mermaid
+erDiagram
+  ...
+\`\`\`
+If an ER diagram is not applicable, replace this section with a **key data structures** table:
+
+| Field | Type | Description |
+|-------|------|-------------|
+
+## 6. Comparison Table
+Create a markdown table comparing the main variants, states, or options in this flow (e.g. success vs failure, payment methods, user types).
+
+| Scenario | Behaviour | Result |
+|----------|-----------|--------|
+
+## 7. Edge Cases & Gotchas
+List at least 3 important edge cases, failure modes, or non-obvious behaviours as a bullet list.
+
+## 8. Conclusion
+Two or three sentences summarising the most important things to understand about "${topic}".
+
+---
+Be thorough, precise, and use concrete examples where possible. Do not skip any section.`
+
+      return { content: [{ type: 'text', text: prompt }] }
+    },
+  )
 }
